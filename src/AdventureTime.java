@@ -3,14 +3,30 @@ import java.util.Scanner;
 
 public class AdventureTime {
 
-    /** This is the main method and it is where you will test your implementations for challengeOne, challengeTwo, etc.
+    /** This is the main method, and it is where you will test your implementations for challengeOne, challengeTwo, etc.
      *
      * @param args
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-
-
+        int challengeOneAnswer = challengeOne("./inputOneTwo.txt"),
+            challengeTwoAnswer = challengeTwo("./inputOneTwo.txt"),
+            challengeThreeAnswer = challengeThree("./inputThreeFour.txt"),
+            challengeFourAnswer = challengeFour("./inputThreeFour.txt");
+        /* Test
+        writeFileAllAnswers(
+                "AdventureTime.txt",
+                challengeOneAnswer,
+                challengeTwoAnswer,
+                challengeThreeAnswer,
+                challengeFourAnswer);
+         */
+        writeFileAllAnswers(
+                "AdventureTime.txt",
+                challengeOneAnswer,
+                challengeTwoAnswer,
+                challengeThreeAnswer,
+                challengeFourAnswer);
     }
 
     /** TODO 1
@@ -22,7 +38,12 @@ public class AdventureTime {
      * @throws IOException
      */
     public static int challengeOne(String fileName) throws IOException {
-        return 0;
+        int[] data = readFile(fileName);
+        int count = 0;
+        for (int i = 0; i < data.length-1; i++) {
+            if (data[i+1]>data[i]) count++;
+        }
+        return count;
     }
 
     /** TODO 2
@@ -34,7 +55,13 @@ public class AdventureTime {
      * @throws FileNotFoundException
      */
     public static int challengeTwo(String fileName) throws FileNotFoundException {
-        return 0;
+        int[] data = readFile(fileName), sums = new int[data.length];
+        int sumsC = 0, count = 0;
+        for (int i  = 0; i < data.length-2; i++) {
+            sums[i] = data[i]+data[i+1]+data[i+2];
+        }
+        for (int i = 0; i < sums.length-1; i++) if (sums[i+1]>sums[i]) count++;
+        return count;
     }
 
     /** TODO 3
@@ -46,7 +73,16 @@ public class AdventureTime {
      * @throws FileNotFoundException
      */
     public static int challengeThree(String fileName) throws FileNotFoundException {
-        return 0;
+        int vert = 0, hor = 0;
+        String[][] arr = readFileTwo(fileName);
+        for (String[] j : arr) {
+            switch (j[0]) {
+                case "forward" -> hor+=Integer.parseInt(j[1]);
+                case "down" ->  vert+=Integer.parseInt(j[1]);
+                case "up" -> vert-=Integer.parseInt(j[1]);
+            }
+        }
+        return vert*hor;
     }
 
     /** TODO 4
@@ -58,7 +94,27 @@ public class AdventureTime {
      * @throws FileNotFoundException
      */
     public static int challengeFour(String filename) throws FileNotFoundException {
-        return 0;
+        int aim = 0, depth = 0, horizontal = 0;
+        String[][] arr = readFileTwo(filename);;
+        for (String[] j : arr) {
+            switch (j[0]) {
+                case "forward" -> {
+                    horizontal += Integer.parseInt(j[1]);
+                    depth+= aim * Integer.parseInt(j[1]);
+                }
+                case "down" ->  aim+=Integer.parseInt(j[1]);
+                case "up" -> aim-=Integer.parseInt(j[1]);
+            }
+        }
+        return horizontal*depth;
+    }
+
+    private static String[][] readFileTwo(String filename) throws FileNotFoundException {
+        File file = new File(filename);
+        Scanner scanner = new Scanner(file);
+        String[][] arr = new String[countLinesInFile(filename)][2];
+        for (int i = 0; i < countLinesInFile(filename); i++) arr[i] = scanner.nextLine().split(" ");
+        return arr;
     }
 
     /** This method will write the values passed as challengeOne, challengeTwo, challengeThree, and challengeFour to a text file.
